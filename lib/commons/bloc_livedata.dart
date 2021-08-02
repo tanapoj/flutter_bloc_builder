@@ -35,7 +35,7 @@ Widget $bool<T extends bool>(
 }) {
   assert(
     liveData != null,
-    '\$if on null, If you create View and run it before create ViewModel, maybe hot-reload fail to bind LiveData from ViewModel --> try run app again',
+    '\bool on null, If you create View and run it before create ViewModel, maybe hot-reload fail to bind LiveData from ViewModel --> try run app again',
   );
 
   $true ??= (_, __) => w.EmptyView();
@@ -88,7 +88,7 @@ Widget $switch<T>(
   );
 }
 
-/// BLoC Builder when
+/// BLoC Builder if
 Widget $if<T>(
   LiveData<T> liveData, {
   Symbol id,
@@ -117,6 +117,7 @@ Widget $if<T>(
   );
 }
 
+/// BLoC Builder else
 Widget $else<T>(
   LiveData<T> liveData, {
   Symbol id,
@@ -125,7 +126,7 @@ Widget $else<T>(
 }) {
   assert(
     liveData != null,
-    '\nif on null, If you create View and run it before create ViewModel, maybe hot-reload fail to bind LiveData from ViewModel --> try run app again',
+    '\nelse on null, If you create View and run it before create ViewModel, maybe hot-reload fail to bind LiveData from ViewModel --> try run app again',
   );
   return $if(
     liveData,
@@ -135,14 +136,19 @@ Widget $else<T>(
   );
 }
 
+/// BLoC Builder for
 Widget $for<T>(
-  LiveData<List<T>> $vm, {
+  LiveData<List<T>> liveData, {
   Symbol id,
   @required Widget Function(BuildContext context, T value, int index) builder,
   Widget Function(BuildContext context, bool isNull) $empty,
   Widget Function(BuildContext context, List<T> list) adapter,
 }) {
-  return $watch<List<T>>($vm, builder: (context, List<T> list) {
+  assert(
+    liveData != null,
+    '\nfor on null, If you create View and run it before create ViewModel, maybe hot-reload fail to bind LiveData from ViewModel --> try run app again',
+  );
+  return $watch<List<T>>(liveData, builder: (context, List<T> list) {
     adapter ??= (BuildContext context, List<T> list) {
       return ListView.builder(
         itemCount: list.length,
@@ -161,7 +167,6 @@ Widget $for<T>(
 }
 
 /// BLoC Builder guard
-
 BLoCBuilderIoC $guard<T>(
   LiveData<T> liveData, {
   Symbol id,

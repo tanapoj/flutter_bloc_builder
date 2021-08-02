@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_live_data/flutter_live_data.dart';
 
 import 'widgets.dart' as w;
-import 'bloc.dart' as bloc;
+import 'bloc_livedata.dart' as bloc;
 
 class BLoCBuilderIoC<E> extends StatelessWidget {
   final LiveData<E> liveData;
