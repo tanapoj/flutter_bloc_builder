@@ -1,16 +1,16 @@
 name: bloc_builder
 description: Util to easily create BLoC
-version: 1.0.1
-author:
+version: 2.1.1
 homepage: https://github.com/tanapoj/flutter_bloc_builder
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_live_data: 1.0.1
+  flutter_live_data: ^2.1.1
+  logger: ^1.1.0
 
 dev_dependencies:
   flutter_test:

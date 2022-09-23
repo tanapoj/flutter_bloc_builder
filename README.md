@@ -1,116 +1,135 @@
 # bloc_builder
 
-Util to easily create BLoC
+easily way to create BLoC
 
-## Getting Started
+view full-document at: [https://pub.dev/packages/bloc_builder](https://pub.dev/packages/bloc_builder)
 
-```dart
-//Stream
-Stream<int> stream = _createStream();
-var widget = $watch(
-  stream,
-  builder: (_, value){
-    return Text('value is $value');
-  }
-);
+> bloc_builder 2 will not support stream any more, please create with flutter_live_data
 
-//LiveData
-LiveData<int> lv = LiveData(1);
-var widget = $watch(
-  lv,
-  builder: (_, value){
-    return Text('value is $value');
-  }
-);
-```
-
-## Builder Util
+## Example
 
 ### $watch
 
 ```dart
 LiveData<int> liveData = LiveData(1);
+
 var widget = $watch(
   liveData,
-  builder: (_, value) => Text('value is $value'),
+  build: (BuildContext _, int value) {
+    return Text('value is $value');
+  },
 );
 ```
 
-### $bool
+### $when
+
+```dart
+LiveData<bool> liveData = LiveData(1);
+
+var widget = $when(liveData) |
+  $case(
+    (int value) => value % 2 == 0,
+    build: (BuildContext _, int value) {
+      return Text('$value is Even.');
+    },
+  ) |
+  $case(
+    (int value) => value % 2 == 1,
+    build: (BuildContext _, int value) {
+      return Text('$value is Odd.');
+    },
+  ) |
+  $else(
+    build: (BuildContext _, int value) {
+      return Text('impossible!');
+    },
+  );
+```
+
+```dart
+LiveData<bool> liveData = LiveData(1);
+
+var widget = $when(liveData)
+  ..$case(
+    (int value) => value % 2 == 0,
+    build: (BuildContext _, int value) {
+      return Text('$value is Even.');
+    },
+  )
+  ..$case(
+    (int value) => value % 2 == 1,
+    build: (BuildContext _, int value) {
+      return Text('$value is Odd.');
+    },
+  )
+  ..$else(
+    build: (BuildContext _, int value) {
+      return Text('impossible!');
+    },
+  );
+```
+
+```dart
+LiveData<bool> liveData = LiveData(1);
+
+var widget = $if(
+    condition: (int value) => value % 2 == 0,
+    build: (BuildContext _, int value) {
+      return Text('$value is Even.');
+    },
+  ) |
+  $else(
+    build: (BuildContext _, int value) {
+      return Text('$value is Odd.');
+    },
+  );
+```
 
 ```dart
 LiveData<bool> liveData = LiveData(true);
-var widget = $bool(
-  liveData,
-  predicate: (b) => b,
-  $true: (_, value) => Text('predicate is TRUE: $value'),
-  $false: (_, value) => Text('predicate is FALSE: $value'),
-);
+
+var widget = $when(liveData) |
+  $true(
+    build: (BuildContext _, bool value) {
+      return Text('head');
+    },
+  ) |
+  $false(
+    build: (BuildContext _, bool value) {
+      return Text('tail');
+    },
+  );
 ```
-
-### $switch
-
-```dart
-LiveData<int> liveData = LiveData(1);
-var widget = $switch(
-  liveData,
-  predicate: (b) => b,
-  builders: {
-    0: (_, value) => Text('value is ZERO'),
-    1: (_, value) => Text('value is ONE'),
-  },
-  $default: (_, value) => Text('value is $value'),
-);
-```
-
-### $if, $else
-
-```dart
-LiveData<int> liveData = LiveData(1);
-var widget = $if(
-  liveData,
-  condition: (c) => c > 10,
-  builder: (_, value) => Text('value more than 10: $value'),
-  $else: (_, value) => Text('value not more than 10: $value'),
-);
-
-var widget = $else(
-  liveData,
-  condition: (c) => c > 10,
-  builder: (_, value) => Text('value not more than 10: $value'),
-);
-```
-
-### $for
-
-```dart
-LiveData<List<String>> liveData = LiveData(<String>[]);
-var widget = Expanded(
-  child: $for(
-      liveData,
-      builder: (_, value) => Text('item: $value'),
-      $empty: (_, List<String> list) => Text('List Empty'),
-   ),
-);
-```
-
 ### $guard
 
 ```dart
-LiveData<int> data = LiveData(1);
-LiveData<bool> loading = LiveData(true);
-LiveData<Error> error = LiveData(Error(message: '-'));
+LiveData<List<int>> counters = LiveData([1]);
+LiveData<bool> isLoading = LiveData(false);
+LiveData<String?> errorMessage = LiveData(null);
 
 var widget = $guard(
-    loading,
-    resolve: (loading) => !loading,
-    $elseReturn: (_, value) => Text('now loading...'),
-).$guard(
-    error,
-    reject: (error) => error.hasError,
-    $elseReturn: (_, value) => Text('error: $value'),
-).$watch(
-    data,
-    build: (_, value) => Text('value is $value'),
-);
+    isLoading,
+    when: (bool loading) => loading,
+    build: (BuildContext _, bool loading) {
+      return Text('now loading...');
+    },
+  ) |
+  $guard.isNotNull(
+    errorMessage,
+    build: (BuildContext _, String? msg) {
+      return Text('error: $msg');
+    },
+  ) |
+  $guard.isEmpty(
+    counters,
+    build: (BuildContext _, List<int> items) {
+      return Text('empty data!');
+    },
+  ) |
+  $watch(
+    counters,
+    build: (BuildContext _, List<int> items) {
+      return Text('data is $items');
+    },
+  );
 ```
