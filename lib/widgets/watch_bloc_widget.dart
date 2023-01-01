@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_live_data/flutter_live_data.dart';
+import 'package:flutter_live_data/index.dart';
 import '../base_widget.dart';
 
 class WatchBLoCWidget<T> extends BaseBLoCWidget {

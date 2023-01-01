@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_live_data/flutter_live_data.dart';
+import 'package:flutter_live_data/index.dart';
 import '../base_widget.dart';
 import '../index.dart' as endpoint;
 
@@ -77,16 +77,3 @@ class CaseBLoCWidget<T> extends BaseBLoCWidget<T> {
     required this.builder,
   }) : super(key: key);
 }
-
-// class WhenCaseElse<T> extends WhenCase<T> {
-//   final Widget Function(BuildContext context, T value) builder;
-//
-//   WhenCaseElse({
-//     Key? key,
-//     required this.builder,
-//   }) : super(
-//     key: key,
-//     predicate: (T value) => true,
-//     builder: builder,
-//   );
-// }

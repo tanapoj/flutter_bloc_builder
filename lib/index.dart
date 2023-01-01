@@ -1,9 +1,10 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_live_data/flutter_live_data.dart';
+import 'package:flutter_live_data/index.dart';
 import 'widgets/for_bloc_widget.dart';
 import 'widgets/match_bloc_widget.dart';
 import 'widgets/watch_bloc_widget.dart';
 import 'widgets/when_bloc_widget.dart';
+import 'package:async/async.dart' show StreamGroup;
 
 import 'base_widget.dart';
 
@@ -274,4 +275,79 @@ class $guard<T> extends GuardBuilder<T> {
         },
         build: build,
       );
+}
+
+/// Memorize
+
+class Memorize {
+  final Map<Symbol, dynamic> _symbol = {};
+
+  Memorize({Map<Symbol, LiveData>? init}) {
+    if (init != null) {
+      for (var entry in init.entries) {
+        put(entry.key, entry.value.value);
+      }
+    }
+  }
+
+  T put<T>(Symbol symbol, T value) {
+    _symbol[symbol] = value;
+    return value;
+  }
+
+  T get<T>(Symbol symbol) => _symbol.containsKey(symbol) ? _symbol[symbol] : null;
+
+  dynamic operator [](Symbol symbol) => get(symbol);
+
+  @override
+  String toString() {
+    return 'Memorize{$_symbol}';
+  }
+}
+
+class _Pair<F extends dynamic, S extends dynamic> {
+  final F first;
+  final S second;
+
+  _Pair(this.first, this.second);
+
+  @override
+  String toString() {
+    return 'Pair{(${first.runtimeType}) $first, (${second.runtimeType}) $second}';
+  }
+}
+
+WatchBLoCWidget $watchMany(
+  Map<Symbol, LiveData> liveDataMap, {
+  required Widget Function(BuildContext context, Memorize memorize) build,
+  LifeCycleOwner? owner,
+}) {
+  if (owner != null) {
+    return $watch(makeMemorize(liveDataMap).owner(owner), build: build);
+  } else {
+    return $watch(makeMemorize(liveDataMap), build: build);
+  }
+}
+
+LiveData<Memorize> makeMemorize(
+  Map<Symbol, LiveData> liveDataMap, {
+  String? name,
+  bool verifyDataChange = false,
+}) {
+  Iterable<Stream<dynamic>> streams = liveDataMap
+      .map((name, lv) {
+        return MapEntry(name, lv.stream?.map((stream) => _Pair(name, stream)));
+      })
+      .values
+      .map((e) => e!);
+  var streamGroup = StreamGroup.merge(streams);
+  var m = Memorize(init: liveDataMap);
+  var memorizeBarrier = streamGroup.map((pair) => m..put(pair.first, pair.second));
+  LiveData<Memorize> liveData = LiveData.stream(
+    m,
+    memorizeBarrier,
+    name: name,
+    verifyDataChange: verifyDataChange,
+  );
+  return liveData;
 }
