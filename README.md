@@ -1,5 +1,7 @@
 # bloc_builder
 
+> สำหรับ document ภาษาไทย กดที่นี่ [https://github.com/tanapoj/flutter_bloc_builder/blob/main/README.th.md](https://github.com/tanapoj/flutter_bloc_builder/blob/main/README.th.md)
+
 easily way to create BLoC
 
 view full-document at: [https://pub.dev/packages/bloc_builder](https://pub.dev/packages/bloc_builder)
