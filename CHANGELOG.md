@@ -17,3 +17,7 @@ Fixed Bug + dart package
 ## [2.2.0] - 29 Dec 2022
 
 add watchManny and Memorize for watch multi-liveData
+
+## [2.2.1] - 2 Jan 2023
+
+down-version async to 2.9.0
