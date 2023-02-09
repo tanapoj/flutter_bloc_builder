@@ -13,22 +13,26 @@ class BaseBLoCWidget<T> extends StatelessWidget {
   operator |(BaseBLoCWidget<T> next) => next;
 }
 
-class EmptyWidget extends Widget {
-  static EmptyWidget? _singleton;
+class EmptyWidget extends SizedBox {
+  const EmptyWidget({super.key, super.width, super.height, super.child});
+}
 
-  factory EmptyWidget({Key? key}) {
-    _singleton ??= EmptyWidget._internal(key: key);
+class EmptyWidget1 extends Widget {
+  static EmptyWidget1? _singleton;
+
+  factory EmptyWidget1({Key? key}) {
+    _singleton ??= EmptyWidget1._internal(key: key);
     return _singleton!;
   }
 
-  const EmptyWidget._internal({Key? key}) : super(key: key);
+  const EmptyWidget1._internal({Key? key}) : super(key: key);
 
   @override
   Element createElement() => _EmptyWidgetElement(this);
 }
 
 class _EmptyWidgetElement extends Element {
-  _EmptyWidgetElement(EmptyWidget widget) : super(widget);
+  _EmptyWidgetElement(EmptyWidget1 widget) : super(widget);
 
   @override
   void mount(Element? parent, dynamic newSlot) {

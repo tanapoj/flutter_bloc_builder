@@ -21,3 +21,7 @@ add watchManny and Memorize for watch multi-liveData
 ## [2.2.1] - 2 Jan 2023
 
 down-version async to 2.9.0
+
+## [2.2.2] - 2 Feb 2023
+
+fix element rendering for empty widget

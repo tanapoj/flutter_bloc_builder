@@ -1,6 +1,6 @@
 name: bloc_builder
 description: Util to easily create BLoC
-version: 2.2.1
+version: 2.2.2
 homepage: https://github.com/tanapoj/flutter_bloc_builder
 
 environment:
